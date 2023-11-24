@@ -6,7 +6,7 @@ argument_specs:
     description: >
       Install the BareOS repositories.
       After applying this role, you can install bareos packages.
-    author: Robert de Bock
+    author: Adfinis
     options:
       bareos_repository_type:
         type: "str"
