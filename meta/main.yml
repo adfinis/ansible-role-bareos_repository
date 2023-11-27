@@ -1,6 +1,6 @@
 ---
 galaxy_info:
-  author: Adfinis
+  author: adfinis
   role_name: bareos_repository
   description: Setup the [Bareos](https://www.bareos.com/) repositories.
   license: Apache-2.0
