@@ -41,7 +41,7 @@ jobs:
               "tag": "40"
             },
             {
-              "image": "opensuse",
+              "image": "fedora",
               "tag": "latest"
             },
             {
