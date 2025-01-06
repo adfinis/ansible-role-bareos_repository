@@ -21,7 +21,8 @@
   loop_control:
     label: "{{ item.name }}"
   when:
-    - ansible_pkg_mgr in [ "dnf", "yum" ]
+    - ansible_pkg_mgr in [ "dnf", "yum" ] or
+      ansible_facts.os_family == "RedHat"
 
 - name: Run tasks on apt based distributions
   when:
