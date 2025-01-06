@@ -15,7 +15,7 @@ on:
 
 jobs:
   test:
-    uses: adfinis/github-workflows-bareos/.github/workflows/molecule.yaml@v0.2.1
+    uses: adfinis/github-workflows-bareos/.github/workflows/molecule.yaml@v0.5.1
     with:
       systems: |
         {
@@ -38,7 +38,7 @@ jobs:
             },
             {
               "image": "fedora",
-              "tag": "39"
+              "tag": "40"
             },
             {
               "image": "opensuse",
@@ -50,7 +50,7 @@ jobs:
             },
             {
               "image": "ubuntu",
-              "tag": "focal"
+              "tag": "jammy"
             }
           ]
         }
