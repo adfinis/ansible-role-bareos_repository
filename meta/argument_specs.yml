@@ -2,9 +2,9 @@
 
 argument_specs:
   main:
-    short_description: "Setup the bareos repositories."
+    short_description: "Setup the Bareos repositories."
     description: >
-      Install the BareOS repositories.
+      Install the Bareos repositories.
       After applying this role, you can install bareos packages.
     author: Adfinis
     options:
@@ -31,9 +31,10 @@ argument_specs:
           - current
           - next
           - release
+          - testing
       bareos_repository_version:
         type: "int"
-        default: 23
+        default: 24
         description: "The version of Bareos to install. Only affects `bareos_repository_type: subscription`."
       bareos_repository_enable_tracebacks:
         type: "bool"
