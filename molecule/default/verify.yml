@@ -8,7 +8,6 @@
     _bareos_repository_verify_packages:
       default:
         - bareos
-        - bareos-debuginfo
       Debian:
         - bareos
         - bareos-dbg
