@@ -1,7 +1,4 @@
 ---
-#
-# Ansible managed
-#
 
 name: Ansible Molecule
 
@@ -27,10 +24,6 @@ jobs:
             {
               "image": "debian",
               "tag": "bullseye"
-            },
-            {
-              "image": "enterpriselinux",
-              "tag": "8"
             },
             {
               "image": "enterpriselinux",
