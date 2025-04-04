@@ -108,6 +108,20 @@
       loop: "{{ bareos_repository_list }}"
       loop_control:
         label: "{{ item.name }}"
+      when:
+        - bareos_repository_type != "subscription"
+
+    - name: Add repository (zypper) (subscription)
+      community.general.zypper_repository:
+        name: "{{ item.name }}"
+        # credential file needs to be appended to URL
+        repo: "{{ item.repo }}?credentials=bareos"
+        state: present
+      loop: "{{ bareos_repository_list }}"
+      loop_control:
+        label: "{{ item.name }}"
+      when:
+        - bareos_repository_type == "subscription"
 
 - name: Enable tracebacks
   when:
