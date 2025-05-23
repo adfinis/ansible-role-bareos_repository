@@ -63,6 +63,6 @@ _bareos_repository_debug_required_packages:
 bareos_repository_debug_required_packages: "{{ _bareos_repository_debug_required_packages[ansible_os_family] | default(_bareos_repository_debug_required_packages['default']) }}"
 
 # Maps which UCS version uses what Debian version.
-# Before UCS 5.2, ansible sees them as Debain.
+# Before UCS 5.2, Ansible sees them as Debian.
 _bareos_repository_ucs_version_map:
   "5.2": 12
