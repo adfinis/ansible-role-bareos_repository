@@ -116,6 +116,7 @@
         name: "{{ item.name }}"
         # credential file needs to be appended to URL
         repo: "{{ item.repo }}?credentials=bareos"
+        autorefresh: false  # avoid credential issues running zypper as non-root
         state: present
       loop: "{{ bareos_repository_list }}"
       loop_control:
