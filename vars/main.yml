@@ -16,6 +16,8 @@ _bareos_repository_url:
     Suse: "{{ bareos_repository_base_url }}/{{ bareos_repository_release }}/SUSE_{{ ansible_distribution_major_version }}"
     Ubuntu: "{{ bareos_repository_base_url }}/{{ bareos_repository_release }}/xUbuntu_{{ ansible_distribution_version }}"
     "Univention Corporate Server": "{{ bareos_repository_base_url }}/{{ bareos_repository_release }}/Debian_{{ _bareos_repository_ucs_version_map[ansible_distribution_version] | default(omit) }}"
+    FreeBSD: "{{ bareos_repository_base_url }}/{{ bareos_repository_release }}/FreeBSD_{{ ansible_distribution_major_version }}"
+
   subscription:
     default: "{{ bareos_repository_base_url }}/{{ bareos_repository_release }}/{{ bareos_repository_version }}/{{ ansible_distribution }}_{{ ansible_distribution_major_version }}"
     Fedora: "{{ bareos_repository_base_url }}/{{ bareos_repository_release }}/{{ bareos_repository_version }}/{{ ansible_distribution }}_{{ ansible_distribution_major_version }}"
@@ -23,6 +25,10 @@ _bareos_repository_url:
     Suse: "{{ bareos_repository_base_url }}/{{ bareos_repository_release }}/{{ bareos_repository_version }}/SUSE_{{ ansible_distribution_major_version }}"
     Ubuntu: "{{ bareos_repository_base_url }}/{{ bareos_repository_release }}/{{ bareos_repository_version }}/xUbuntu_{{ ansible_distribution_version }}"
     "Univention Corporate Server": "{{ bareos_repository_base_url }}/{{ bareos_repository_release }}/{{ bareos_repository_version }}/Debian_{{ _bareos_repository_ucs_version_map[ansible_distribution_version] | default(omit) }}"
+
+    # using the hard-coded string "download.bareos.com" rather than injecting credentials into `bareos_repository_base_url`. bareos is replacing '@' with _at_ for subscription usernames in FreeBSD repo URL
+    FreeBSD: "https://{{ bareos_repository_username | replace('@', '_at_') | default(omit) }}:{{ bareos_repository_password | default(omit) }}@download.bareos.com/bareos/{{ bareos_repository_release }}/{{ bareos_repository_version }}/FreeBSD_{{ ansible_distribution_major_version }}"
+
 bareos_repository_url: "{{ _bareos_repository_url[bareos_repository_type][ansible_distribution] | default(_bareos_repository_url[bareos_repository_type][ansible_os_family] | default(_bareos_repository_url[bareos_repository_type]['default'])) }}"
 
 # Debian and RedHat use a different structure.

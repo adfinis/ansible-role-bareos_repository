@@ -1,0 +1,6 @@
+---
+
+- name: FreeBSD PKG reload
+  ansible.builtin.command:
+    cmd: pkg update
+  changed_when: true
