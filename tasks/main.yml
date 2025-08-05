@@ -124,6 +124,29 @@
       when:
         - bareos_repository_type == "subscription"
 
+- name: Run tasks on FreeBSD distributions
+  when:
+    - ansible_os_family == "FreeBSD"
+  block:
+    - name: Make sure repo directory is present
+      ansible.builtin.file:
+        path: /usr/local/etc/pkg/repos
+        state: directory
+        owner: root
+        group: wheel
+        mode: "0755"
+
+    - name: Add PKG repository file
+      ansible.builtin.template:
+        src: FreeBSD_repo.j2
+        dest: /usr/local/etc/pkg/repos/bareos.conf
+        owner: root
+        group: wheel
+        mode: "0640"
+      no_log: true
+      notify:
+        - FreeBSD PKG reload
+
 - name: Enable tracebacks
   when:
     - bareos_repository_enable_tracebacks
