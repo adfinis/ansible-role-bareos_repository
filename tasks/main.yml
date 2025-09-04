@@ -28,9 +28,11 @@
   when:
     - ansible_pkg_mgr in [ "apt" ]
   block:
-    - name: Install CA certificates (apt)
+    - name: Install dependencies for apt
       ansible.builtin.package:
-        name: ca-certificates
+        name:
+          - ca-certificates
+          - gpg
 
     - name: Download gpg key (apt)
       ansible.builtin.get_url:
