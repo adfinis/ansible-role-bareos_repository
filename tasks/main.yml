@@ -32,6 +32,7 @@
       ansible.builtin.package:
         name:
           - ca-certificates
+          - python3-debian
           - gpg
           - python3-debian
 
