@@ -32,8 +32,8 @@
       ansible.builtin.package:
         name:
           - ca-certificates
-          - python3-debian
           - gpg
+          - python3-debian
 
     - name: Download gpg key (apt)
       ansible.builtin.get_url:
@@ -83,6 +83,7 @@
           ansible.builtin.apt_repository:
             repo: "{{ item.deb_repo }}"
             state: absent
+            update_cache: true
           no_log: true
           loop: "{{ bareos_repository_list }}"
           loop_control:
