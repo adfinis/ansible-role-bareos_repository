@@ -71,13 +71,13 @@
       loop_control:
         label: "{{ item.name }}"
       when:
-        - ansible_facts.distribution == "Debian" and ansible_facts.distribution_major_version | int <= 12 or
-          ansible_facts.distribution == "Ubuntu" and ansible_facts.distribution_major_version | int <= 22
+        - (ansible_facts.distribution == "Debian" and ansible_facts.distribution_major_version | int <= 12) or
+          (ansible_facts.distribution == "Ubuntu" and ansible_facts.distribution_major_version | int <= 22)
 
     - name: Add repository (apt) deb822 format and remove old format
       when:
-        - ansible_facts.distribution == "Debian" and ansible_facts.distribution_major_version | int >= 13 or
-          ansible_facts.distribution == "Ubuntu" and ansible_facts.distribution_major_version | int >= 24
+        - (ansible_facts.distribution == "Debian" and ansible_facts.distribution_major_version | int >= 13) or
+          (ansible_facts.distribution == "Ubuntu" and ansible_facts.distribution_major_version | int >= 24)
       block:
         - name: Remove repository in old format
           ansible.builtin.apt_repository:
