@@ -65,11 +65,14 @@
         repo: "{{ item.deb_repo }}"
         state: present
         filename: "{{ item.name }}"
-        update_cache: true
+        # use handler instead to avoid issues with version/gpg key changes
+        update_cache: false
       no_log: true
       loop: "{{ bareos_repository_list }}"
       loop_control:
         label: "{{ item.name }}"
+      notify:
+        - Apt update cache
       when:
         - (ansible_facts.distribution == "Debian" and ansible_facts.distribution_major_version | int <= 12) or
           (ansible_facts.distribution == "Ubuntu" and ansible_facts.distribution_major_version | int <= 22)
@@ -79,15 +82,20 @@
         - (ansible_facts.distribution == "Debian" and ansible_facts.distribution_major_version | int >= 13) or
           (ansible_facts.distribution == "Ubuntu" and ansible_facts.distribution_major_version | int >= 24)
       block:
+
+        # use file rather than apt_repository module, to avoid possible issues during repo version changes,
+        # as item.deb_repo contains current version of bareos_repository_version and
+        # repo file(s) with older version are ignored and not cleaned-up properly.
         - name: Remove repository in old format
-          ansible.builtin.apt_repository:
-            repo: "{{ item.deb_repo }}"
+          ansible.builtin.file:
+            path: "/etc/apt/sources.list.d/{{ item.name }}.list"
             state: absent
-            update_cache: true
           no_log: true
           loop: "{{ bareos_repository_list }}"
           loop_control:
             label: "{{ item.name }}"
+          notify:
+            - Apt update cache
 
         - name: Add repository (apt) deb822 format
           ansible.builtin.deb822_repository:
