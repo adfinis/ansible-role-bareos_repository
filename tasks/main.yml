@@ -33,6 +33,7 @@
         name:
           - ca-certificates
           - gpg
+          - python3-debian
 
     - name: Download gpg key (apt)
       ansible.builtin.get_url:
@@ -69,6 +70,41 @@
       loop: "{{ bareos_repository_list }}"
       loop_control:
         label: "{{ item.name }}"
+      when:
+        - (ansible_facts.distribution == "Debian" and ansible_facts.distribution_major_version | int <= 12) or
+          (ansible_facts.distribution == "Ubuntu" and ansible_facts.distribution_major_version | int <= 22)
+
+    - name: Add repository (apt) deb822 format and remove old format
+      when:
+        - (ansible_facts.distribution == "Debian" and ansible_facts.distribution_major_version | int >= 13) or
+          (ansible_facts.distribution == "Ubuntu" and ansible_facts.distribution_major_version | int >= 24)
+      block:
+        - name: Remove repository in old format
+          ansible.builtin.apt_repository:
+            repo: "{{ item.deb_repo }}"
+            state: absent
+            update_cache: true
+          no_log: true
+          loop: "{{ bareos_repository_list }}"
+          loop_control:
+            label: "{{ item.name }}"
+
+        - name: Add repository (apt) deb822 format
+          ansible.builtin.deb822_repository:
+            name: "{{ item.name }}"
+            uris: "{{ item.repo }}"
+            enabled: true
+            types:
+              - deb
+              - deb-src
+            suites: /
+            signed_by: /etc/apt/bareos.gpg
+          no_log: true
+          loop: "{{ bareos_repository_list }}"
+          loop_control:
+            label: "{{ item.name }}"
+          notify:
+            - Apt update cache
 
 - name: Run tasks on zypper based distributions
   when:
