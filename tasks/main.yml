@@ -66,6 +66,7 @@
         - bareos_repository_type == "subscription"
 
     # don't use apt_repository module as it cannot handle version changes in URL
+    # see: https://github.com/adfinis/ansible-role-bareos_repository/pull/30#issue-3875677300
     - name: Add repository (apt) 
       ansible.builtin.template:
         src: apt_repo.j2
