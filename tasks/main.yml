@@ -35,6 +35,8 @@
           - gpg
           - python3-debian
 
+    # has to be downloaded first as key for subscription repo is behind basic-auth,
+    # which is not supported by builtin.apt_repository/builtin_deb822_repository
     - name: Download gpg key (apt)
       ansible.builtin.get_url:
         url: "{{ bareos_repository_gpg_key }}"
