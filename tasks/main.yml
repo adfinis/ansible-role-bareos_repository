@@ -81,13 +81,15 @@
         - Apt update cache
       when:
         - (ansible_facts.distribution == "Debian" and ansible_facts.distribution_major_version | int <= 12) or
-          (ansible_facts.distribution == "Ubuntu" and ansible_facts.distribution_major_version | int <= 22)
+          (ansible_facts.distribution == "Ubuntu" and ansible_facts.distribution_major_version | int <= 22) or
+          (ansible_facts.distribution == "Univention Corporate Server" and ansible_distribution_version is version("5.2", "<"))
 
     - name: Add repository (apt) deb822 format and remove old format
       when:
         - (ansible_facts.distribution == "Debian" and ansible_facts.distribution_major_version | int >= 13) or
           (ansible_facts.distribution == "Ubuntu" and ansible_facts.distribution_major_version | int >= 24) or
-          (ansible_facts.distribution == "Univention Corporate Server") # distribution only set to this in UCS 5.2
+          (ansible_facts.distribution == "Univention Corporate Server" and ansible_distribution_version is version("5.2", ">="))
+
       block:
 
         # use file rather than apt_repository module, to avoid possible issues during repo version changes,
