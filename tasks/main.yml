@@ -90,7 +90,6 @@
           ansible.builtin.file:
             path: "/etc/apt/sources.list.d/{{ item.name }}.list"
             state: absent
-            update_cache: true
           no_log: true
           loop: "{{ bareos_repository_list }}"
           loop_control:
