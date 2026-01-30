@@ -65,13 +65,15 @@
       when:
         - bareos_repository_type == "subscription"
 
-    - name: Add repository (apt)
-      ansible.builtin.apt_repository:
-        repo: "{{ item.deb_repo }}"
-        state: present
-        filename: "{{ item.name }}"
-        # use handler instead to avoid issues with version/gpg key changes
-        update_cache: false
+    # don't use apt_repository module as it cannot handle version changes in URL
+    # see: https://github.com/adfinis/ansible-role-bareos_repository/pull/30#issue-3875677300
+    - name: Add repository (apt) 
+      ansible.builtin.template:
+        src: apt_repo.j2
+        dest: "/etc/apt/sources.list.d/{{ item.name }}.list"
+        owner: root
+        group: root
+        mode: "0644"
       loop: "{{ bareos_repository_list }}"
       loop_control:
         label: "{{ item.name }}"
@@ -79,12 +81,15 @@
         - Apt update cache
       when:
         - (ansible_facts.distribution == "Debian" and ansible_facts.distribution_major_version | int <= 12) or
-          (ansible_facts.distribution == "Ubuntu" and ansible_facts.distribution_major_version | int <= 22)
+          (ansible_facts.distribution == "Ubuntu" and ansible_facts.distribution_major_version | int <= 22) or
+          (ansible_facts.distribution == "Univention Corporate Server" and ansible_distribution_version is version("5.2", "<"))
 
     - name: Add repository (apt) deb822 format and remove old format
       when:
         - (ansible_facts.distribution == "Debian" and ansible_facts.distribution_major_version | int >= 13) or
-          (ansible_facts.distribution == "Ubuntu" and ansible_facts.distribution_major_version | int >= 24)
+          (ansible_facts.distribution == "Ubuntu" and ansible_facts.distribution_major_version | int >= 24) or
+          (ansible_facts.distribution == "Univention Corporate Server" and ansible_distribution_version is version("5.2", ">="))
+
       block:
 
         # use file rather than apt_repository module, to avoid possible issues during repo version changes,
