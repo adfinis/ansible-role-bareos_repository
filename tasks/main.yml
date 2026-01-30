@@ -68,7 +68,7 @@
     # don't use apt_repository module as it cannot handle version changes in URL
     - name: Add repository (apt) 
       ansible.builtin.template:
-        src: templates/apt_repo.j2
+        src: apt_repo.j2
         dest: "/etc/apt/sources.list.d/{{ item.name }}.list"
         owner: root
         group: root
