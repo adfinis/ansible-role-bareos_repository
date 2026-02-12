@@ -40,15 +40,15 @@
     - name: Download gpg key (apt)
       ansible.builtin.get_url:
         url: "{{ bareos_repository_gpg_key }}"
-        dest: /etc/apt/bareos.gpg
+        dest: /etc/apt/keyrings/bareos.gpg
         username: "{{ bareos_repository_username }}"
         password: "{{ bareos_repository_password }}"
-        force: true # required so file is replaced if upstream key changes
+        force: true  # required so file is replaced if upstream key changes
         owner: root
         group: root
         mode: "0644"
       no_log: true
-      changed_when: false # avoid reporting a change due to force: true
+      changed_when: false  # avoid reporting a change due to force: true
 
     - name: Place credentials file (apt)
       ansible.builtin.copy:
@@ -67,7 +67,7 @@
 
     # don't use apt_repository module as it cannot handle version changes in URL
     # see: https://github.com/adfinis/ansible-role-bareos_repository/pull/30#issue-3875677300
-    - name: Add repository (apt) 
+    - name: Add repository (apt)
       ansible.builtin.template:
         src: apt_repo.j2
         dest: "/etc/apt/sources.list.d/{{ item.name }}.list"
@@ -114,7 +114,7 @@
               - deb
               - deb-src
             suites: /
-            signed_by: /etc/apt/bareos.gpg
+            signed_by: /etc/apt/keyrings/bareos.gpg
           loop: "{{ bareos_repository_list }}"
           loop_control:
             label: "{{ item.name }}"
