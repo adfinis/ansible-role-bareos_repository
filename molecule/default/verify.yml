@@ -14,6 +14,18 @@
     bareos_repository_verify_packages: "{{ _bareos_repository_verify_packages[ansible_os_family] | default(_bareos_repository_verify_packages['default']) }}"
 
   tasks:
+
+    - name: Test repositories (apt update)
+      ansible.builtin.apt:
+        update_cache: true
+      when: ansible_facts.os_family == 'Debian'
+
+    - name: Test repositories (dnf update cache)
+      ansible.builtin.dnf:
+        update_cache: true
+      when:
+        - ansible_facts.os_family == "RedHat"
+
     - name: Test if bareos packages can be installed
       ansible.builtin.package:
         name: "{{ bareos_repository_verify_packages }}"
