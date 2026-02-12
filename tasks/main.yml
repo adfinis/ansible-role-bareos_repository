@@ -40,7 +40,7 @@
     - name: Download gpg key (apt)
       ansible.builtin.get_url:
         url: "{{ bareos_repository_gpg_key }}"
-        dest: /etc/apt/bareos.gpg
+        dest: /etc/apt/keyrings/bareos.gpg
         username: "{{ bareos_repository_username }}"
         password: "{{ bareos_repository_password }}"
         force: true # required so file is replaced if upstream key changes
@@ -114,7 +114,7 @@
               - deb
               - deb-src
             suites: /
-            signed_by: /etc/apt/bareos.gpg
+            signed_by: /etc/apt/keyrings/bareos.gpg
           loop: "{{ bareos_repository_list }}"
           loop_control:
             label: "{{ item.name }}"
