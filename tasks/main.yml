@@ -121,6 +121,13 @@
           notify:
             - Apt update cache
 
+    # gpg key was initially placed in /etc/apt/bareos.gpg.
+    # now it's placed in /etc/apt/keyrings/ and this task makes sure the key is cleaned-up.
+    - name: Remove key in former location (apt)
+      ansible.builtin.file:
+        path: /etc/apt/bareos.gpg
+        state: absent
+
 - name: Run tasks on zypper based distributions
   when:
     - ansible_pkg_mgr in [ "zypper" ]
