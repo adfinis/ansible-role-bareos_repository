@@ -40,15 +40,15 @@
     - name: Download gpg key (apt)
       ansible.builtin.get_url:
         url: "{{ bareos_repository_gpg_key }}"
-        dest: /etc/apt/bareos.gpg
+        dest: "{{ bareos_repository_gpg_key_path }}"
         username: "{{ bareos_repository_username }}"
         password: "{{ bareos_repository_password }}"
-        force: true # required so file is replaced if upstream key changes
+        force: true  # required so file is replaced if upstream key changes
         owner: root
         group: root
         mode: "0644"
       no_log: true
-      changed_when: false # avoid reporting a change due to force: true
+      changed_when: false  # avoid reporting a change due to force: true
 
     - name: Place credentials file (apt)
       ansible.builtin.copy:
@@ -67,7 +67,7 @@
 
     # don't use apt_repository module as it cannot handle version changes in URL
     # see: https://github.com/adfinis/ansible-role-bareos_repository/pull/30#issue-3875677300
-    - name: Add repository (apt) 
+    - name: Add repository (apt)
       ansible.builtin.template:
         src: apt_repo.j2
         dest: "/etc/apt/sources.list.d/{{ item.name }}.list"
@@ -114,12 +114,19 @@
               - deb
               - deb-src
             suites: /
-            signed_by: /etc/apt/bareos.gpg
+            signed_by: "{{ bareos_repository_gpg_key_path }}"
           loop: "{{ bareos_repository_list }}"
           loop_control:
             label: "{{ item.name }}"
           notify:
             - Apt update cache
+
+    # gpg key was initially placed in /etc/apt/bareos.gpg.
+    # now it's placed in /etc/apt/keyrings/ and this task makes sure the key is cleaned-up.
+    - name: Remove key in former location (apt)
+      ansible.builtin.file:
+        path: /etc/apt/bareos.gpg
+        state: absent
 
 - name: Run tasks on zypper based distributions
   when:
@@ -128,7 +135,7 @@
     - name: Download gpg key (zypper)
       ansible.builtin.get_url:
         url: "{{ bareos_repository_gpg_key }}"
-        dest: /etc/gnupg/bareos.gpg
+        dest: "{{ bareos_repository_gpg_key_path }}"
         username: "{{ bareos_repository_username }}"
         password: "{{ bareos_repository_password }}"
         owner: root
@@ -138,7 +145,7 @@
 
     - name: Import gpg key (zypper)
       ansible.builtin.rpm_key:
-        key: /etc/gnupg/bareos.gpg
+        key: "{{ bareos_repository_gpg_key_path }}"
 
     - name: Place credentials file (zypper)
       ansible.builtin.copy:

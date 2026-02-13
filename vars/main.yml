@@ -39,6 +39,14 @@ _bareos_repository_gpg_key:
 
 bareos_repository_gpg_key: "{{ _bareos_repository_gpg_key[ansible_os_family] | default(_bareos_repository_gpg_key['default']) }}"
 
+_bareos_repository_gpg_key_path:
+  default: "none"  # path is not required on RHEL based distros
+  Suse: /etc/gnupg/bareos.gpg
+  Debian: /etc/apt/keyrings/bareos.gpg
+  Debian_11: /etc/apt/trusted.gpg.d/bareos.gpg
+
+bareos_repository_gpg_key_path: "{{ _bareos_repository_gpg_key_path[(ansible_os_family + '_' + ansible_distribution_major_version)] | default(_bareos_repository_gpg_key_path[ansible_os_family]) | default(_bareos_repository_gpg_key_path['default']) }}"
+
 # A list of repositories. The items in this list contains parameters for both dnf/yum, apt and zypperz.
 bareos_repository_list:
   - name: bareos
@@ -46,7 +54,7 @@ bareos_repository_list:
     baseurl: "{{ bareos_repository_url }}"
     gpgkey: "{{ bareos_repository_gpg_key }}"
     repo: "{{ bareos_repository_url }}"
-    deb_repo: "deb [signed-by=/etc/apt/bareos.gpg] {{ bareos_repository_url }} /"
+    deb_repo: "deb [signed-by={{ bareos_repository_gpg_key_path }}] {{ bareos_repository_url }} /"
     username: "{{ bareos_repository_username | default(omit) }}"
     password: "{{ bareos_repository_password | default(omit) }}"
 
@@ -57,7 +65,7 @@ bareos_repository_debug_list:
     baseurl: "{{ bareos_repository_url }}/debug"
     gpgkey: "{{ bareos_repository_gpg_key }}"
     repo: "{{ bareos_repository_url }}/debug"
-    deb_repo: "deb [signed-by=/etc/apt/bareos.gpg] {{ bareos_repository_url }}/debug /"
+    deb_repo: "deb [signed-by={{ bareos_repository_gpg_key_path }}] {{ bareos_repository_url }}/debug /"
     username: "{{ bareos_repository_username | default(omit) }}"
     password: "{{ bareos_repository_password | default(omit) }}"
 
